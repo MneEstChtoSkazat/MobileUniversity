@@ -60,7 +60,38 @@
 | Зависимости | Используются актуальные версии библиотек из доверенных репозиториев (Maven Central, Google) |
 | Приватность | Политика конфиденциальности описывает, какие данные используются и зачем |
 
+## 3. Инструкция по сборке APK из командной строки
 
+**Требования:** JDK 17, Android SDK (платформа из `compileSdk`), Gradle wrapper (`gradlew`) в проекте.
+
+1. Склонируйте проект:
+   ```bash
+   git clone <ссылка на репозиторий>
+   cd <папка проекта>
+   ```
+2. Задайте пути (или создайте `local.properties` со строкой `sdk.dir=/путь/к/Android/Sdk`):
+   ```bash
+   export JAVA_HOME=/путь/к/jdk-17
+   export ANDROID_HOME=$HOME/Android/Sdk
+   ```
+   Для Windows используйте `set` вместо `export`.
+3. Отладочный APK:
+   ```bash
+   ./gradlew assembleDebug        # Windows: gradlew.bat assembleDebug
+   ```
+   Результат: `app/build/outputs/apk/debug/app-debug.apk`.
+4. Установка на устройство или эмулятор:
+   ```bash
+   adb install -r app/build/outputs/apk/debug/app-debug.apk
+   ```
+5. Релизная сборка (нужен keystore):
+   ```bash
+   keytool -genkey -v -keystore release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias release
+   ./gradlew assembleRelease      # APK
+   ./gradlew bundleRelease        # AAB для магазина
+   ```
+   Пароли и keystore не храните в репозитории: передавайте их через `~/.gradle/gradle.properties` или переменные окружения.
+   
 ## Стек
 
 - Язык: Kotlin
